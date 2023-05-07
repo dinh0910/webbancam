@@ -1,0 +1,53 @@
+﻿@model IEnumerable<webbancam.Models.ThongTin>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SanPham)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrongHop)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChinhSach)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BaoHanh)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SanPham.SanPhamID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrongHop)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChinhSach)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BaoHanh)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ThongTinID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ThongTinID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ThongTinID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
