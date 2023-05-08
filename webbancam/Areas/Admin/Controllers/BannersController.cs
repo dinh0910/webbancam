@@ -57,10 +57,11 @@ namespace webbancam.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BannerID,HinhAnh,Active")] Banner banner)
+        public async Task<IActionResult> Create(IFormFile file, [Bind("BannerID,HinhAnh,Active")] Banner banner)
         {
             if (ModelState.IsValid)
             {
+                banner.HinhAnh = Upload(file);
                 _context.Add(banner);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -89,7 +90,7 @@ namespace webbancam.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BannerID,HinhAnh,Active")] Banner banner)
+        public async Task<IActionResult> Edit(int id, IFormFile? file, [Bind("BannerID,HinhAnh,Active")] Banner banner)
         {
             if (id != banner.BannerID)
             {
@@ -100,6 +101,10 @@ namespace webbancam.Areas.Admin.Controllers
             {
                 try
                 {
+                    if(file != null)
+                    {
+                        banner.HinhAnh = Upload(file);
+                    }
                     _context.Update(banner);
                     await _context.SaveChangesAsync();
                 }
@@ -159,6 +164,22 @@ namespace webbancam.Areas.Admin.Controllers
         private bool BannerExists(int id)
         {
           return (_context.Banner?.Any(e => e.BannerID == id)).GetValueOrDefault();
+        }
+
+        public string Upload(IFormFile file)
+        {
+            string fn = null;
+
+            if (file != null)
+            {
+                fn = Guid.NewGuid().ToString() + "_" + file.FileName;
+                var path = $"wwwroot\\images\\banners\\{fn}"; // đường dẫn lưu file
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+            }
+            return fn;
         }
     }
 }

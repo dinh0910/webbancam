@@ -19,6 +19,12 @@
                 @Html.DisplayNameFor(model => model.NhanHieu)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Ten)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HinhAnh)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.DonGia)
             </th>
             <th>
@@ -37,10 +43,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.DanhMuc.DanhMucID)
+                @Html.DisplayFor(modelItem => item.DanhMuc.Ten)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NhanHieu.NhanHieuID)
+                @Html.DisplayFor(modelItem => item.NhanHieu.Ten)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ten)
+            </td>
+            <td>
+                <img src="~/images/products/@Html.DisplayFor(modelItem => item.HinhAnh)" width="150" height="50" class="img-thumbnail" />
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DonGia)

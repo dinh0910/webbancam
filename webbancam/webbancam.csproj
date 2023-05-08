@@ -16,4 +16,9 @@
     <PackageReference Include="XAct.Core.PCL" Version="0.0.5014" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\banners\" />
+    <Folder Include="wwwroot\images\products\" />
+  </ItemGroup>
+
 </Project>

@@ -12,6 +12,9 @@ builder.Services.AddSession(options => {
     options.Cookie.Name = "WebBanCam";
     options.IdleTimeout = TimeSpan.FromDays(60);
 });
+
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

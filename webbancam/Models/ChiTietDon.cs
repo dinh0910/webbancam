@@ -1,4 +1,6 @@
-﻿namespace webbancam.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace webbancam.Models
 {
     public class ChiTietDon
     {
@@ -10,10 +12,12 @@
         public int SanPhamID { get; set; }
         public SanPham? SanPham { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:#,##0} đ")]
         public int DonGia { get; set; }
 
         public int SoLuong { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:#,##0} đ")]
         public int ThanhTien { get; set; }
     }
 }

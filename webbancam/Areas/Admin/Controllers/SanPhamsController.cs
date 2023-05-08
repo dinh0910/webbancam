@@ -50,8 +50,8 @@ namespace webbancam.Areas.Admin.Controllers
         // GET: Admin/SanPhams/Create
         public IActionResult Create()
         {
-            ViewData["DanhMucID"] = new SelectList(_context.DanhMuc, "DanhMucID", "DanhMucID");
-            ViewData["NhanHieuID"] = new SelectList(_context.NhanHieu, "NhanHieuID", "NhanHieuID");
+            ViewData["DanhMucID"] = new SelectList(_context.DanhMuc, "DanhMucID", "Ten");
+            ViewData["NhanHieuID"] = new SelectList(_context.NhanHieu, "NhanHieuID", "Ten");
             return View();
         }
 
@@ -60,16 +60,17 @@ namespace webbancam.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SanPhamID,DanhMucID,NhanHieuID,DonGia,Sale,ThanhTien,SoLuong")] SanPham sanPham)
+        public async Task<IActionResult> Create(IFormFile file, [Bind("SanPhamID,DanhMucID,NhanHieuID,Ten,HinhAnh,DonGia,Sale,ThanhTien,SoLuong")] SanPham sanPham)
         {
             if (ModelState.IsValid)
             {
+                sanPham.HinhAnh = Upload(file);
                 _context.Add(sanPham);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DanhMucID"] = new SelectList(_context.DanhMuc, "DanhMucID", "DanhMucID", sanPham.DanhMucID);
-            ViewData["NhanHieuID"] = new SelectList(_context.NhanHieu, "NhanHieuID", "NhanHieuID", sanPham.NhanHieuID);
+            ViewData["DanhMucID"] = new SelectList(_context.DanhMuc, "DanhMucID", "Ten", sanPham.DanhMucID);
+            ViewData["NhanHieuID"] = new SelectList(_context.NhanHieu, "NhanHieuID", "Ten", sanPham.NhanHieuID);
             return View(sanPham);
         }
 
@@ -86,8 +87,8 @@ namespace webbancam.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["DanhMucID"] = new SelectList(_context.DanhMuc, "DanhMucID", "DanhMucID", sanPham.DanhMucID);
-            ViewData["NhanHieuID"] = new SelectList(_context.NhanHieu, "NhanHieuID", "NhanHieuID", sanPham.NhanHieuID);
+            ViewData["DanhMucID"] = new SelectList(_context.DanhMuc, "DanhMucID", "Ten", sanPham.DanhMucID);
+            ViewData["NhanHieuID"] = new SelectList(_context.NhanHieu, "NhanHieuID", "Ten", sanPham.NhanHieuID);
             return View(sanPham);
         }
 
@@ -96,7 +97,7 @@ namespace webbancam.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SanPhamID,DanhMucID,NhanHieuID,DonGia,Sale,ThanhTien,SoLuong")] SanPham sanPham)
+        public async Task<IActionResult> Edit(int id, IFormFile? file, [Bind("SanPhamID,DanhMucID,NhanHieuID,Ten,HinhAnh,DonGia,Sale,ThanhTien,SoLuong")] SanPham sanPham)
         {
             if (id != sanPham.SanPhamID)
             {
@@ -123,8 +124,8 @@ namespace webbancam.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DanhMucID"] = new SelectList(_context.DanhMuc, "DanhMucID", "DanhMucID", sanPham.DanhMucID);
-            ViewData["NhanHieuID"] = new SelectList(_context.NhanHieu, "NhanHieuID", "NhanHieuID", sanPham.NhanHieuID);
+            ViewData["DanhMucID"] = new SelectList(_context.DanhMuc, "DanhMucID", "Ten", sanPham.DanhMucID);
+            ViewData["NhanHieuID"] = new SelectList(_context.NhanHieu, "NhanHieuID", "Ten", sanPham.NhanHieuID);
             return View(sanPham);
         }
 
@@ -171,5 +172,23 @@ namespace webbancam.Areas.Admin.Controllers
         {
           return (_context.SanPham?.Any(e => e.SanPhamID == id)).GetValueOrDefault();
         }
+
+        public string Upload(IFormFile file)
+        {
+            string fn = null;
+
+            if (file != null)
+            {
+                fn = Guid.NewGuid().ToString() + "_" + file.FileName;
+                var path = $"wwwroot\\images\\products\\{fn}"; // đường dẫn lưu file
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+            }
+            return fn;
+        }
+
+
     }
 }

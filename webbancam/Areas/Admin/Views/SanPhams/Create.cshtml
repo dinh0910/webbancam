@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="DanhMucID" class="control-label"></label>
@@ -21,19 +21,26 @@
                 <select asp-for="NhanHieuID" class ="form-control" asp-items="ViewBag.NhanHieuID"></select>
             </div>
             <div class="form-group">
+                <label asp-for="Ten" class="control-label"></label>
+                <input asp-for="Ten" class="form-control" />
+                <span asp-validation-for="Ten" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HinhAnh" class="control-label"></label>
+                <input type="file" name="file" class="form-control" />
+            </div>
+            <div class="form-group">
                 <label asp-for="DonGia" class="control-label"></label>
-                <input asp-for="DonGia" class="form-control" />
+                <input asp-for="DonGia" id="DonGia" class="form-control" oninput="tinhSale();" />
                 <span asp-validation-for="DonGia" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Sale" class="control-label"></label>
-                <input asp-for="Sale" class="form-control" />
+                <input asp-for="Sale" id="GiamGia" class="form-control" oninput="tinhSale();" />
                 <span asp-validation-for="Sale" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ThanhTien" class="control-label"></label>
-                <input asp-for="ThanhTien" class="form-control" />
-                <span asp-validation-for="ThanhTien" class="text-danger"></span>
+                <input hidden asp-for="ThanhTien" id="ThanhTien" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="SoLuong" class="control-label"></label>
@@ -51,6 +58,10 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script>
+    function tinhSale() {
+        var donGia = document.getElementById("DonGia").value;
+        var giamGia = document.getElementById("GiamGia").value;
+        document.getElementById("ThanhTien").value = donGia - (donGia * (giamGia / 100));
+    }
+</script>

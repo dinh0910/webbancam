@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using webbancam.Models;
 
 #nullable disable
 
@@ -87,6 +88,8 @@ namespace webbancam.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DanhMucID = table.Column<int>(type: "int", nullable: false),
                     NhanHieuID = table.Column<int>(type: "int", nullable: false),
+                    Ten = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HinhAnh = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DonGia = table.Column<int>(type: "int", nullable: false),
                     Sale = table.Column<int>(type: "int", nullable: false),
                     ThanhTien = table.Column<int>(type: "int", nullable: false),
