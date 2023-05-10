@@ -27,26 +27,6 @@ namespace webbancam.Areas.Admin.Controllers
             return View(await webbancamContext.ToListAsync());
         }
 
-        // GET: Admin/SanPhams/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.SanPham == null)
-            {
-                return NotFound();
-            }
-
-            var sanPham = await _context.SanPham
-                .Include(s => s.DanhMuc)
-                .Include(s => s.NhanHieu)
-                .FirstOrDefaultAsync(m => m.SanPhamID == id);
-            if (sanPham == null)
-            {
-                return NotFound();
-            }
-
-            return View(sanPham);
-        }
-
         // GET: Admin/SanPhams/Create
         public IActionResult Create()
         {
@@ -108,6 +88,10 @@ namespace webbancam.Areas.Admin.Controllers
             {
                 try
                 {
+                    if(file != null)
+                    {
+                        sanPham.HinhAnh = Upload(file);
+                    }
                     _context.Update(sanPham);
                     await _context.SaveChangesAsync();
                 }
@@ -189,6 +173,104 @@ namespace webbancam.Areas.Admin.Controllers
             return fn;
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.SanPham == null)
+            {
+                return NotFound();
+            }
 
+            var sanPham = await _context.SanPham
+                .Include(s => s.DanhMuc)
+                .Include(s => s.NhanHieu)
+                .FirstOrDefaultAsync(m => m.SanPhamID == id);
+
+            ViewBag.thongso = _context.ThongSo;
+            ViewBag.hinhanh = _context.HinhAnh;
+            ViewBag.mota = _context.MoTa;
+            ViewBag.thongtin = _context.ThongTin;
+
+            if (sanPham == null)
+            {
+                return NotFound();
+            }
+
+            return View(sanPham);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details(IFormFile file, int? id, [Bind("ThongSoID,SanPhamID,TenThongSo,NoiDung")] ThongSo thongSo,
+            [Bind("HinhAnhID,SanPhamID,Anh,Active")] HinhAnh hinhAnh, [Bind("MoTaID,SanPhamID,NoiDungMoTa")] MoTa moTa,
+            [Bind("ThongSoID,SanPhamID,TrongHop,ChinhSach,BaoHanh")] ThongTin thongTin)
+        {
+            if (moTa.NoiDungMT != null)
+            {
+                _context.Update(moTa);
+                await _context.SaveChangesAsync();
+            }
+            else if (thongSo.NoiDung != null || thongSo.TenThongSo != null)
+            {
+                _context.Update(thongSo);
+                await _context.SaveChangesAsync();
+            } 
+            else if (thongTin.TrongHop != null || thongTin.ChinhSach != null || thongTin.BaoHanh != null)
+            {
+                _context.Update(thongTin);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                hinhAnh.Ten = Upload(file);
+                _context.Update(hinhAnh);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", "SanPhams", routeValues: new { id });
+        }
+
+        public async Task<IActionResult> DeleteMoTa(int? id)
+        {
+            var tt = await _context.MoTa
+                    .FirstOrDefaultAsync(m => m.SanPhamID == id);
+
+            _context.MoTa.Remove(tt);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "SanPhams", routeValues: new { id });
+        }
+
+        public async Task<IActionResult> DeleteHinhAnh(int? id)
+        {
+            var tt = await _context.HinhAnh
+                    .FirstOrDefaultAsync(m => m.SanPhamID == id);
+
+            _context.HinhAnh.Remove(tt);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "SanPhams", routeValues: new { id });
+        }
+
+        public async Task<IActionResult> DeleteThongSo(int? id, int? idts)
+        {
+            var tt = await _context.ThongSo
+                    .FirstOrDefaultAsync(m => m.ThongSoID == idts);
+
+            _context.ThongSo.Remove(tt);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "SanPhams", routeValues: new { id });
+        }
+
+        public async Task<IActionResult> DeleteThongTin(int? id, int? idts)
+        {
+            var tt = await _context.ThongTin
+                    .FirstOrDefaultAsync(m => m.ThongTinID == idts);
+
+            _context.ThongTin.Remove(tt);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "SanPhams", routeValues: new { id });
+        }
     }
 }

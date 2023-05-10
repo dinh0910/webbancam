@@ -38,6 +38,8 @@ namespace webbancam.Areas.Admin.Controllers
 
             var donDatHang = await _context.DonDatHang
                 .FirstOrDefaultAsync(m => m.DonDatHangID == id);
+            ViewBag.ctdh = _context.ChiTietDon;
+
             if (donDatHang == null)
             {
                 return NotFound();

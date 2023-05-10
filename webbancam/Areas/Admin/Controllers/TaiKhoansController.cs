@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using webbancam.Data;
 using webbancam.Models;
+using webbancam.Libs;
 
 namespace webbancam.Areas.Admin.Controllers
 {
@@ -49,7 +50,7 @@ namespace webbancam.Areas.Admin.Controllers
         // GET: Admin/TaiKhoans/Create
         public IActionResult Create()
         {
-            ViewData["QuyenID"] = new SelectList(_context.Quyen, "QuyenID", "QuyenID");
+            ViewData["QuyenID"] = new SelectList(_context.Quyen, "QuyenID", "Ten");
             return View();
         }
 
@@ -62,11 +63,12 @@ namespace webbancam.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                taiKhoan.MatKhau = SHA1.ComputeHash(taiKhoan.MatKhau);
                 _context.Add(taiKhoan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["QuyenID"] = new SelectList(_context.Quyen, "QuyenID", "QuyenID", taiKhoan.QuyenID);
+            ViewData["QuyenID"] = new SelectList(_context.Quyen, "QuyenID", "Ten", taiKhoan.QuyenID);
             return View(taiKhoan);
         }
 
@@ -83,7 +85,7 @@ namespace webbancam.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["QuyenID"] = new SelectList(_context.Quyen, "QuyenID", "QuyenID", taiKhoan.QuyenID);
+            ViewData["QuyenID"] = new SelectList(_context.Quyen, "QuyenID", "Ten", taiKhoan.QuyenID);
             return View(taiKhoan);
         }
 
@@ -92,7 +94,7 @@ namespace webbancam.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TaiKhoanID,QuyenID,TenTaiKhoan,MatKhau,HoTen,Sdt,DiaChi")] TaiKhoan taiKhoan)
+        public async Task<IActionResult> Edit(int id, string? pw, [Bind("TaiKhoanID,QuyenID,TenTaiKhoan,MatKhau,HoTen,Sdt,DiaChi")] TaiKhoan taiKhoan)
         {
             if (id != taiKhoan.TaiKhoanID)
             {
@@ -103,6 +105,10 @@ namespace webbancam.Areas.Admin.Controllers
             {
                 try
                 {
+                    if(pw != null)
+                    {
+                        taiKhoan.MatKhau = SHA1.ComputeHash(pw);
+                    }
                     _context.Update(taiKhoan);
                     await _context.SaveChangesAsync();
                 }
@@ -119,7 +125,7 @@ namespace webbancam.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["QuyenID"] = new SelectList(_context.Quyen, "QuyenID", "QuyenID", taiKhoan.QuyenID);
+            ViewData["QuyenID"] = new SelectList(_context.Quyen, "QuyenID", "Ten", taiKhoan.QuyenID);
             return View(taiKhoan);
         }
 

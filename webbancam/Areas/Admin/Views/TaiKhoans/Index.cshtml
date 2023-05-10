@@ -34,7 +34,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Quyen.QuyenID)
@@ -57,9 +57,15 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.TaiKhoanID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.TaiKhoanID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TaiKhoanID">Delete</a>
+                @if (item.QuyenID == 1)
+                {
+                    <a class="disabled" aria-disabled="true">Delete</a>
+                } else
+                {
+                    <a asp-action="Delete" asp-route-id="@item.TaiKhoanID">Delete</a>
+                }
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
